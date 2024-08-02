@@ -38,6 +38,7 @@ class Avatar extends StatelessWidget {
   final Color? shadowColor;
   final TextStyle textStyle;
   final bool useCache;
+  final int? textCodeOverride;
 
   final GestureTapCallback? onTap;
 
@@ -51,6 +52,7 @@ class Avatar extends StatelessWidget {
       this.sources,
       this.useCache = false,
       this.value,
+      this.textCodeOverride,
       Widget? loader,
       List<Color>? placeholderColors,
       AvatarShape? shape,
@@ -104,7 +106,9 @@ class Avatar extends StatelessWidget {
       List<String> nameParts = this.name!.split(' ');
       String initials = nameParts.map((p) => p.substring(0, 1)).join('');
       return _textAvatar(
-          initials.substring(0, initials.length >= 2 ? 2 : initials.length));
+        initials.substring(0, initials.length >= 2 ? 2 : initials.length),
+        this.textCodeOverride,
+      );
     }
 
     return _textAvatar(this.value ?? "");
@@ -139,11 +143,12 @@ class Avatar extends StatelessWidget {
     ));
   }
 
-  Widget _textAvatar(String text) {
-    int textCode = text
-        .split('')
-        .map((l) => l.codeUnitAt(0))
-        .reduce((previous, current) => previous + current);
+  Widget _textAvatar(String text, [int? textCodeOverride]) {
+    int textCode = textCodeOverride ??
+        text
+            .split('')
+            .map((l) => l.codeUnitAt(0))
+            .reduce((previous, current) => previous + current);
 
     return _baseAvatar(Container(
       width: this.shape!.width,
